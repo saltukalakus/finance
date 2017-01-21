@@ -1,6 +1,5 @@
 import React, { PropTypes as T } from 'react'
 import {Row, Col, Image} from 'react-bootstrap'
-import s from './styles.module.css'
 
 export class ProfileDetails extends React.Component {
   static propTypes = {
@@ -11,9 +10,9 @@ export class ProfileDetails extends React.Component {
     const { profile } = this.props
     const { address } = profile.user_metadata || {}
     return (
-      <Row className={s.root}>
+      <Row>
         <Col md={2} mdOffset={4}>
-          <Image src={profile.picture} circle className={s.avatar} />
+          <Image src={profile.picture} circle/>
         </Col>
         <Col md={6}>
           <h3>Profile Details</h3>

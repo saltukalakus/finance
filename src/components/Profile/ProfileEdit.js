@@ -2,7 +2,6 @@ import React, { PropTypes as T } from 'react'
 import ReactDOM from 'react-dom'
 import AuthService from '../../utils/AuthService'
 import {Row, Col, Image, Form, FormGroup, FormControl, ControlLabel, Button} from 'react-bootstrap'
-import s from './styles.module.css'
 
 export class ProfileEdit extends React.Component {
   static propTypes = {
@@ -24,7 +23,7 @@ export class ProfileEdit extends React.Component {
     const { profile } = this.props
     const { address } = profile.user_metadata || {}
     return (
-      <Row className={s.root}>
+      <Row>
         <Col md={4} mdOffset={6}>
           <h3>Editing Profile</h3>
           <Form horizontal onSubmit={this.handleSubmit.bind(this)}>

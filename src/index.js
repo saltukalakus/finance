@@ -1,22 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { render } from 'react-dom'
+import {browserHistory} from 'react-router'
 
 import 'bootstrap/dist/css/bootstrap.css'
-import './app.css'
 
 import App from './containers/App/App'
 
-import {browserHistory} from 'react-router'
-import makeRoutes from './routes'
 
-const routes = makeRoutes()
+import makeMainRoutes from './views/Main/routes'
 
-/*const mountNode = document.querySelector('#root');
-ReactDOM.render(
-  <App history={browserHistory}
-        routes={routes} />,
-mountNode);*/
+const routes = makeMainRoutes()
 
 render(
     <App history={browserHistory}

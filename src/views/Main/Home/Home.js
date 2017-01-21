@@ -3,7 +3,6 @@ import {Button} from 'react-bootstrap'
 import AuthService from '../../../utils/AuthService'
 import ProfileDetails from '../../../components/Profile/ProfileDetails'
 import ProfileEdit from '../../../components/Profile/ProfileEdit'
-import styles from './styles.module.css'
 
 export class Home extends React.Component {
   static contextTypes = {
@@ -32,7 +31,7 @@ export class Home extends React.Component {
   render(){
     const { profile } = this.state
     return (
-      <div className={styles.root}>
+      <div>
         <h2>Home</h2>
         <ProfileDetails profile={profile}></ProfileDetails>
         <ProfileEdit profile={profile} auth={this.props.auth}></ProfileEdit>

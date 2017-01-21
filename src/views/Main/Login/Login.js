@@ -1,7 +1,6 @@
 import React, { PropTypes as T } from 'react'
 import {ButtonToolbar, Button} from 'react-bootstrap'
 import AuthService from '../../../utils/AuthService'
-import styles from './styles.module.css'
 
 export class Login extends React.Component {
   static contextTypes = {
@@ -16,9 +15,9 @@ export class Login extends React.Component {
   render() {
     const { auth } = this.props
     return (
-      <div className={styles.root}>
+      <div>
         <h2>Login</h2>
-        <ButtonToolbar className={styles.toolbar}>
+        <ButtonToolbar>
           <Button bsStyle="primary" onClick={auth.login.bind(this)}>Login</Button>
         </ButtonToolbar>
       </div>
