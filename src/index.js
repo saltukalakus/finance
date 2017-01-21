@@ -5,7 +5,7 @@ import {browserHistory} from 'react-router'
 
 import 'bootstrap/dist/css/bootstrap.css'
 
-import App from './containers/App/App'
+import App from './containers/App'
 
 
 import makeMainRoutes from './views/Main/routes'
