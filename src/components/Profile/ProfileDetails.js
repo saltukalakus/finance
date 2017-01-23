@@ -11,17 +11,17 @@ export class ProfileDetails extends React.Component {
     const { address } = profile.user_metadata || {}
     return (
       <Row>
-        <Col md={2} mdOffset={4}>
-          <Image src={profile.picture} circle/>
-        </Col>
-        <Col md={6}>
+        <Col md={12}>
+          <div id="profile-div">
           <h3>Profile Details</h3>
+          <Image src={profile.picture} circle className="profile-pic"/>
           <p><strong>Name: </strong> {profile.name}</p>
           <p><strong>Email: </strong> {profile.email}</p>
           <p><strong>Nickname: </strong> {profile.nickname}</p>
           <p><strong>Address: </strong> {address}</p>
           <p><strong>Created At: </strong> {profile.created_at}</p>
           <p><strong>Updated At: </strong> {profile.updated_at}</p>
+          </div>
         </Col>
       </Row>
     )

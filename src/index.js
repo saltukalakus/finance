@@ -4,6 +4,7 @@ import { render } from 'react-dom'
 import {browserHistory} from 'react-router'
 
 import 'bootstrap/dist/css/bootstrap.css'
+import './styles.css'
 
 import App from './containers/App'
 
