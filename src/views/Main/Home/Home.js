@@ -1,4 +1,4 @@
-import React, { PropTypes as T } from 'react'
+import React, { PropTypes as  T} from 'react'
 import {Button} from 'react-bootstrap'
 import AuthService from '../../../utils/AuthService'
 import ProfileDetails from '../../../components/Profile/ProfileDetails'
@@ -38,4 +38,9 @@ export class Home extends React.Component {
   }
 }
 
-export default Home;
+
+/*Home.propTypes = {
+  auth: PropTypes.object.isRequired
+}*/
+
+export default Home

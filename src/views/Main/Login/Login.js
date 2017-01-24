@@ -1,4 +1,4 @@
-import React, { PropTypes as T } from 'react'
+import React, {PropTypes as T} from 'react'
 import {ButtonToolbar, Button} from 'react-bootstrap'
 import AuthService from '../../../utils/AuthService'
 
@@ -16,11 +16,22 @@ export class Login extends React.Component {
     const { auth } = this.props
     return (
       <div className="main-div">
-        <h2>Login</h2>
-        <Button bsStyle="primary" onClick={auth.login.bind(this)}>Login</Button>
+        <br />
+        <h4>Login</h4>
+        <br />
+        <Button onClick={auth.login.bind(this)}>Login</Button>
       </div>
     )
   }
 }
 
-export default Login;
+/*Login.contextTypes = {
+  router: PropTypes.object.isRequired
+}
+
+Login.propTypes = {
+  location: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired
+}*/
+
+export default Login

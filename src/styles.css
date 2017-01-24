@@ -2,7 +2,7 @@
 	font-family: 'Open Sans', sans-serif;
 }
 
-#profile-div{text-align: center;}
+#profile-div{margin-top: 50px; text-align: center;}
 
 #profile-div p{
 	font-size: 14px;

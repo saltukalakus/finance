@@ -2,14 +2,14 @@ import React, { PropTypes } from 'react';
 import { Router } from 'react-router';
 
 class App extends React.Component {
-  static contextTypes = {
+  /*static contextTypes = {
     router: PropTypes.object
   }
 
   static propTypes = {
     history: PropTypes.object.isRequired,
     routes: PropTypes.element.isRequired
-  };
+  };*/
 
   get content() {
     return (
@@ -21,11 +21,17 @@ class App extends React.Component {
 
   render () {
      return (
-       <div style={{ height: '100%' }}>
+       <div>
          {this.content}
        </div>
      )
    }
 }
 
-export default App;
+
+App.propTypes = {
+  history: PropTypes.object.isRequired,
+  routes: PropTypes.element.isRequired
+}
+
+export default App
