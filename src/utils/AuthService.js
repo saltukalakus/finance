@@ -1,12 +1,19 @@
 import { EventEmitter } from 'events'
 import { isTokenExpired } from './jwtHelper'
+import Auth0 from 'auth0-js'
 import Auth0Lock from 'auth0-lock'
 import { browserHistory } from 'react-router'
+import * as firebase from 'firebase'
+
 
 export default class AuthService extends EventEmitter {
   constructor(clientId, domain) {
     super()
     this.domain = domain
+
+    this.webAuth = new Auth0.WebAuth({ domain: domain, clientID: clientId})
+
+
     // Configure Auth0
     this.lock = new Auth0Lock(clientId, domain, {
       auth: {
@@ -35,15 +42,47 @@ export default class AuthService extends EventEmitter {
     // Saves the user token
     this.setToken(authResult.idToken)
     // navigate to the home route
-    browserHistory.replace('/home')
+    //browserHistory.replace('/home')
     // Async loads the user profile data
-    this.lock.getProfile(authResult.idToken, (error, profile) => {
+    /*this.lock.getProfile(authResult.idToken, (error, profile) => {
       if (error) {
         console.log('Error loading the Profile', error)
       } else {
         this.setProfile(profile)
       }
-    })
+    })*/
+    //var auth0 = new Auth0({ domain : this.domain, clientID: 'Yq8ALLieVYPZgtSvgCSypJ2pAXcHqGJ4'})
+
+
+    var options = {
+          id_token : authResult.idToken,
+          api : 'firebase',
+          scope : 'openid name email displayName',
+          target: 'Yq8ALLieVYPZgtSvgCSypJ2pAXcHqGJ4',
+          responseType: 'token',
+          usePostMessage: true,
+          redirectUri:'http://localhost:8080/home'
+        };
+
+    this.webAuth.renewAuth(options, function(err, result) {
+
+          if(!err) {
+            // Exchange the delegate token for a Firebase auth token
+            firebase.auth().signInWithCustomToken(result.id_token).catch(function(error) {
+              console.log(error);
+            });
+          } else {
+                firebase.auth().onAuthStateChanged(firebaseUser => {
+                  if (firebaseUser) console.log(firebaseUser)
+                  else console.log('no user')
+                })
+
+          }
+        });
+
+    //browserHistory.replace('/home')
+
+
   }
 
   _authorizationError(error){
@@ -104,5 +143,10 @@ export default class AuthService extends EventEmitter {
     // Clear user token and profile data from localStorage
     localStorage.removeItem('id_token');
     localStorage.removeItem('profile');
+     firebase.auth().signOut().then(function() {
+    console.log("Signout Successful")
+  }, function(error) {
+    console.log(error);
+  });
   }
 }

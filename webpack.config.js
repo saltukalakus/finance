@@ -9,7 +9,6 @@ module.exports = {
         filename: 'bundle.js'
     },
     
-    watch: true,
 
     module: {
         loaders: [
