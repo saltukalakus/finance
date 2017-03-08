@@ -18,4 +18,4 @@ render(
         routes={routes} />,
     document.getElementById('app'))
 
-$(".button-collapse").sideNav();
+//$(".button-collapse").sideNav();

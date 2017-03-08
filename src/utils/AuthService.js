@@ -4,14 +4,15 @@ import Auth0 from 'auth0-js'
 import Auth0Lock from 'auth0-lock'
 import { browserHistory } from 'react-router'
 import * as firebase from 'firebase'
-
+import request from 'superagent';
 
 export default class AuthService extends EventEmitter {
   constructor(clientId, domain) {
     super()
     this.domain = domain
 
-    this.webAuth = new Auth0.WebAuth({ domain: domain, clientID: clientId})
+    //this.webAuth = new Auth0.WebAuth({ domain: domain, clientID: clientId})
+    this.auth0 = new Auth0({ domain: domain, clientID: clientId})
 
 
     // Configure Auth0
@@ -31,41 +32,26 @@ export default class AuthService extends EventEmitter {
       }],
     })
     // Add callback for lock `authenticated` event
-    this.lock.on('authenticated', this._doAuthentication.bind(this))
+    this.lock.on('authenticated', this._doAuthentication2.bind(this))
     // Add callback for lock `authorization_error` event
     this.lock.on('authorization_error', this._authorizationError.bind(this))
     // binds login functions to keep this context
     this.login = this.login.bind(this)
   }
 
-  _doAuthentication(authResult){
-    // Saves the user token
-    this.setToken(authResult.idToken)
-    // navigate to the home route
-    //browserHistory.replace('/home')
-    // Async loads the user profile data
-    /*this.lock.getProfile(authResult.idToken, (error, profile) => {
-      if (error) {
-        console.log('Error loading the Profile', error)
-      } else {
-        this.setProfile(profile)
-      }
-    })*/
-    //var auth0 = new Auth0({ domain : this.domain, clientID: 'Yq8ALLieVYPZgtSvgCSypJ2pAXcHqGJ4'})
-
-
-    var options = {
+  _doAuthentication2(authResult){
+     this.setToken(authResult.idToken) 
+     // Set the options to retreive a firebase delegation token
+        var options = {
           id_token : authResult.idToken,
           api : 'firebase',
           scope : 'openid name email displayName',
-          target: 'Yq8ALLieVYPZgtSvgCSypJ2pAXcHqGJ4',
-          responseType: 'token',
-          usePostMessage: true,
-          redirectUri:'http://localhost:8080/home'
+          target: 'Yq8ALLieVYPZgtSvgCSypJ2pAXcHqGJ4'
         };
 
-    this.webAuth.renewAuth(options, function(err, result) {
-
+        console.log("Get the Firebase token with delegation endpoint -2 ");
+        // Make a call to the Auth0 '/delegate'
+        this.auth0.getDelegationToken(options, function(err, result) {
           if(!err) {
             // Exchange the delegate token for a Firebase auth token
             firebase.auth().signInWithCustomToken(result.id_token).catch(function(error) {
@@ -76,9 +62,54 @@ export default class AuthService extends EventEmitter {
                   if (firebaseUser) console.log(firebaseUser)
                   else console.log('no user')
                 })
-
           }
         });
+  }
+
+  _doAuthentication(authResult){
+    // Saves the user token
+    this.setToken(authResult.idToken)
+
+    /* var options = {
+          client_id : 'Yq8ALLieVYPZgtSvgCSypJ2pAXcHqGJ4',
+          grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+          id_token : authResult.idToken,
+          target: 'Yq8ALLieVYPZgtSvgCSypJ2pAXcHqGJ4',
+          scope : 'openid',
+          api_type : 'firebase'
+        }; */
+    var options = {
+          client_id : 'Yq8ALLieVYPZgtSvgCSypJ2pAXcHqGJ4',
+          grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+          id_token : authResult.idToken,
+          target: 'Yq8ALLieVYPZgtSvgCSypJ2pAXcHqGJ4',
+          scope : 'openid name email displayName',
+          api_type : 'firebase'
+        };
+    // Call Auth0 endpoint for delegation
+    console.log("Get the Firebase token with delegation endpoint");
+    //this.webAuth.delegation(options, function(err, result) {
+    request
+      .post('https://' + this.domain + '/delegation')
+      .send(options)
+      .set('Accept', 'application/json')
+      .end(function(err, result){
+          console.log("Token endpoint from Auth0 replied.");
+          console.log(result);
+
+          if(!err) {
+            firebase.auth().signInWithCustomToken(result.id_token).catch(function(error) {
+              console.log(error);
+            });
+          } else {
+                firebase.auth().onAuthStateChanged(firebaseUser => {
+                  if (firebaseUser) console.log(firebaseUser)
+                  else console.log('no user')
+                })
+
+          }
+      });
+
 
     //browserHistory.replace('/home')
 
@@ -92,6 +123,7 @@ export default class AuthService extends EventEmitter {
 
   login() {
     // Call the show method to display the widget.
+    console.log("Login screen entered")
     this.lock.show()
   }
 
