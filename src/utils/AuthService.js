@@ -32,21 +32,21 @@ export default class AuthService extends EventEmitter {
       }],
     })
     // Add callback for lock `authenticated` event
-    this.lock.on('authenticated', this._doAuthentication2.bind(this))
+    this.lock.on('authenticated', this._doAuthentication.bind(this))
     // Add callback for lock `authorization_error` event
     this.lock.on('authorization_error', this._authorizationError.bind(this))
     // binds login functions to keep this context
     this.login = this.login.bind(this)
   }
 
-  _doAuthentication2(authResult){
+  _doAuthentication(authResult){
      this.setToken(authResult.idToken) 
      // Set the options to retreive a firebase delegation token
         var options = {
           id_token : authResult.idToken,
           api : 'firebase',
           scope : 'openid name email displayName',
-          target: 'Yq8ALLieVYPZgtSvgCSypJ2pAXcHqGJ4'
+          target: '2CGgtkrfmm90KUQcgHJmX7aN0dtoaynl'
         };
 
         console.log("Get the Firebase token with delegation endpoint -2 ");
@@ -54,7 +54,10 @@ export default class AuthService extends EventEmitter {
         this.auth0.getDelegationToken(options, function(err, result) {
           if(!err) {
             // Exchange the delegate token for a Firebase auth token
+            console.log("Token endpoint from Auth0 replied. - 2");
+            console.log(result);
             firebase.auth().signInWithCustomToken(result.id_token).catch(function(error) {
+              console.log("Firebase API error returned");
               console.log(error);
             });
           } else {
@@ -66,7 +69,8 @@ export default class AuthService extends EventEmitter {
         });
   }
 
-  _doAuthentication(authResult){
+  // This fails for some reason :(
+  _doAuthentication_delegation_api(authResult){
     // Saves the user token
     this.setToken(authResult.idToken)
 
@@ -79,15 +83,16 @@ export default class AuthService extends EventEmitter {
           api_type : 'firebase'
         }; */
     var options = {
-          client_id : 'Yq8ALLieVYPZgtSvgCSypJ2pAXcHqGJ4',
+          client_id : '2CGgtkrfmm90KUQcgHJmX7aN0dtoaynl',
           grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
           id_token : authResult.idToken,
-          target: 'Yq8ALLieVYPZgtSvgCSypJ2pAXcHqGJ4',
-          scope : 'openid name email displayName',
+          target: '2CGgtkrfmm90KUQcgHJmX7aN0dtoaynl',
+          scope : 'openid profile email',
           api_type : 'firebase'
         };
     // Call Auth0 endpoint for delegation
     console.log("Get the Firebase token with delegation endpoint");
+    console.dir(authResult);
     //this.webAuth.delegation(options, function(err, result) {
     request
       .post('https://' + this.domain + '/delegation')
@@ -99,6 +104,7 @@ export default class AuthService extends EventEmitter {
 
           if(!err) {
             firebase.auth().signInWithCustomToken(result.id_token).catch(function(error) {
+              console.log("Firebase API error returned");
               console.log(error);
             });
           } else {
